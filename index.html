@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An Extra Special Birthday Wish!</title>
+    <style>
+        /* Basic Reset & Body Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Animated Gradient Background */
+            background: linear-gradient(45deg, #f8cdda, #d6a4a4, #f7cac9, #92a8d1, #f8cdda);
+            background-size: 600% 600%;
+            animation: animatedBackground 25s ease infinite;
+            font-family: 'cursive', 'Brush Script MT', sans-serif;
+            overflow: hidden;
+            position: relative;
+            cursor: default;
+            /* Subtle background pattern */
+            background-image:
+                linear-gradient(45deg, #f8cdda, #d6a4a4, #f7cac9, #92a8d1, #f8cdda),
+                url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        /* Keyframes for background animation */
+        @keyframes animatedBackground {
+            0% { background-position: 0% 50%, 0 0; } /* Animate both gradient and pattern */
+            50% { background-position: 100% 50%, 0 0; }
+            100% { background-position: 0% 50%, 0 0; }
+        }
+
+        /* --- Floating Hearts --- */
+        .heart { /* Styling and positions remain the same */
+            position: absolute; font-size: 1.5rem; color: rgba(255, 192, 203, 0.4);
+            animation: float 15s linear infinite; z-index: 0; user-select: none;
+        }
+        .heart:nth-child(1) { left: 10%; top: 20%; animation-duration: 12s; animation-delay: 0s; font-size: 1.2rem;}
+        .heart:nth-child(2) { left: 20%; top: 70%; animation-duration: 18s; animation-delay: 2s; }
+        .heart:nth-child(3) { left: 35%; top: 40%; animation-duration: 14s; animation-delay: 4s; font-size: 1rem;}
+        .heart:nth-child(4) { left: 50%; top: 85%; animation-duration: 20s; animation-delay: 1s; }
+        .heart:nth-child(5) { left: 65%; top: 15%; animation-duration: 13s; animation-delay: 3s; font-size: 1.3rem;}
+        .heart:nth-child(6) { left: 80%; top: 55%; animation-duration: 17s; animation-delay: 5s; }
+        .heart:nth-child(7) { left: 90%; top: 30%; animation-duration: 16s; animation-delay: 0.5s; font-size: 1.1rem;}
+        .heart:nth-child(8) { left: 5%; top: 90%; animation-duration: 19s; animation-delay: 2.5s; }
+        @keyframes float { /* Animation remains the same */
+            0% { transform: translateY(5vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.4; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Postcard Container */
+        .postcard-container {
+            perspective: 2000px; animation: fadeInScaleUp 1.5s ease-out 0.5s forwards;
+            opacity: 0; z-index: 1; position: relative;
+        }
+        @keyframes fadeInScaleUp { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* The Postcard itself */
+        .postcard {
+            width: 550px; height: 350px; position: relative;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px;'><text y='24' >💖</text></svg>") 16 16, pointer;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s ease;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+            border-radius: 15px;
+        }
+        .postcard:not(.open):hover { /* Enhanced hover effect remains */
+            transform: scale(1.03) rotateZ(1deg);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.45), 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+
+        /* Front and Inside Panels */
+        .card-front, .card-inside {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 15px;
+            overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d; /* Needed for thickness effect */
+        }
+
+        /* --- Card Thickness Simulation --- */
+        .card-front::before, .card-inside::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; right: 0;
+            width: 8px; /* Thickness */
+            background: linear-gradient(to left, rgba(0,0,0,0.15), rgba(0,0,0,0.05)); /* Darker edge */
+            transform: rotateY(90deg) translateZ(4px); /* Position on the edge */
+            transform-origin: right center;
+            border-radius: 0 2px 2px 0; /* Slight rounding on edge */
+            opacity: 0.8;
+        }
+         /* Adjust inside panel's edge to face the other way */
+         .card-inside::before {
+            left: 0; right: auto;
+            background: linear-gradient(to right, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
+            transform: rotateY(-90deg) translateZ(4px);
+            transform-origin: left center;
+            border-radius: 2px 0 0 2px;
+         }
+
+        /* Front Panel Styling */
+        .card-front {
+            background: linear-gradient(to bottom right, #fff0f5, #ffe4e1);
+            z-index: 2; transform-origin: left center;
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex; flex-direction: column;
+            justify-content: space-between; /* Space out elements */
+            align-items: center; padding: 25px 30px; /* Adjusted padding */
+        }
+         /* Decorative Border */
+        .card-front::after { /* Using ::after now since ::before is for thickness */
+            content: ''; position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 3px dashed #c88e8e; border-radius: 8px; opacity: 0.7;
+            z-index: 0; /* Behind other elements */
+        }
+
+        .stamp { /* Styling remains the same */
+            position: absolute; top: 20px; right: 20px; width: 60px; height: 75px;
+            background-color: #eec4c4; border: 1px solid #b48484;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 12px; color: #5c3e3e; font-family: sans-serif; font-weight: bold;
+            text-align: center; line-height: 1.2; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            transform: rotate(7deg); animation: wiggle 5s ease-in-out infinite; z-index: 1;
+        }
+         .stamp > span { /* Target the SVG filter edge */
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border: 2px solid #eec4c4; filter: url(#wavy2);
+         }
+         @keyframes wiggle { /* Wiggle remains */
+             0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(4deg); }
+         }
+
+        /* --- Animated To/From on Front --- */
+        .address-info {
+            width: 60%; /* Adjust width as needed */
+            margin-top: 40px; /* Push down from top */
+            margin-bottom: auto; /* Keep it relatively high */
+            text-align: left;
+            color: #a06d6d;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.9em;
+            line-height: 1.6;
+            z-index: 1;
+            opacity: 0; /* Initially hidden */
+            transform: translateX(-10px);
+            animation: slideInAddress 1s ease-out 1.5s forwards; /* Delay after card appears */
+        }
+        .address-info strong {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        @keyframes slideInAddress {
+            to { opacity: 0.8; transform: translateX(0); }
+        }
+
+        .front-text { /* Click me text */
+            text-align: center; color: #8b5757;
+            font-size: 1.8em; /* Slightly smaller to make space */
+            font-weight: bold; z-index: 1; position: relative;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); line-height: 1.3;
+            margin-top: auto; /* Push to bottom */
+            margin-bottom: 10px; /* Space from bottom edge */
+        }
+
+        /* Inside Panel Styling */
+        .card-inside {
+            background: #fffaf0; z-index: 1; display: flex;
+        }
+
+        .inside-left, .inside-right {
+            flex: 1; padding: 30px 35px; /* Slightly adjusted padding */
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: relative;
+        }
+
+        /* --- Improved Inside Crease --- */
+        .inside-left {
+             /* Remove old border */
+             position: relative; /* Needed for pseudo element */
+        }
+        .inside-left::after { /* Create crease with gradient */
+            content: '';
+            position: absolute;
+            right: -1px; /* Position at the edge */
+            top: 15px; /* Add some padding */
+            bottom: 15px;
+            width: 2px;
+            background: linear-gradient(to right, rgba(0,0,0,0.0), rgba(0,0,0,0.15), rgba(0,0,0,0.0));
+            opacity: 0.7;
+        }
+
+         /* Photo Placeholder */
+         .photo-placeholder { /* Styling remains the same */
+            width: 80%; height: 60%; background-color: rgba(224, 192, 192, 0.2);
+            border: 2px dashed #d1a3a3; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9em; color: #a88888; text-align: center; padding: 10px;
+            animation: pulseIcon 2.5s ease-in-out infinite;
+         }
+         .photo-placeholder img { /* Styling remains the same */
+             max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 8px; display: block;
+         }
+         @keyframes pulseIcon { /* Pulse remains */
+            0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 0.9; }
+         }
+
+        /* Birthday Message Styling */
+        .inside-right .birthday-message {
+            color: #d17a7a; font-size: 2.1em; text-align: center; line-height: 1.5;
+            margin: 0; font-family: 'Parisienne', cursive;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+            position: relative; z-index: 10; min-height: 100px;
+            transition: filter 0.3s ease; /* For hover effect */
+        }
+        /* Message Hover Effect */
+        .inside-right .birthday-message:hover {
+             filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.6)); /* Pink glow */
+        }
+
+        /* Staggered Letter Animation */
+        .birthday-message span {
+            display: inline-block; opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        /* Apply animation when card is open */
+        .postcard.open .birthday-message span {
+            opacity: 1; transform: translateY(0) scale(1);
+        }
+         /* Reverse animation when closing */
+        .postcard:not(.open) .birthday-message span {
+            opacity: 0; transform: translateY(20px) scale(0.8);
+            /* Reverse transition delay handled by JS */
+        }
+
+        /* Open State */
+        .postcard.open .card-front { transform: rotateY(-180deg); }
+
+        /* Sparkle/Confetti Animation */
+        .sparkle { /* Styling and positions remain the same */
+            position: absolute; width: 7px; height: 7px; background-color: #f7d794;
+            border-radius: 50%; opacity: 0; animation: sparkle-fall 1.8s linear infinite; z-index: 5;
+        }
+        .sparkle:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 25%; left: 85%; animation-delay: 0.2s; background-color: #f8a5c2; }
+        .sparkle:nth-child(3) { top: 75%; left: 10%; animation-delay: 0.4s; }
+        .sparkle:nth-child(4) { top: 90%; left: 70%; animation-delay: 0.6s; background-color: #f8a5c2; }
+        .sparkle:nth-child(5) { top: 50%; left: 50%; animation-delay: 0.8s; }
+        .sparkle:nth-child(6) { top: 30%; left: 30%; animation-delay: 1s; background-color: #f8a5c2; }
+        .sparkle:nth-child(7) { top: 65%; left: 90%; animation-delay: 1.2s; }
+        .sparkle:nth-child(8) { top: 40%; left: 5%; animation-delay: 1.4s; background-color: #f8a5c2; }
+        .sparkle:nth-child(9) { top: 80%; left: 40%; animation-delay: 0.3s; }
+        .sparkle:nth-child(10) { top: 15%; left: 60%; animation-delay: 0.7s; background-color: #f8a5c2;}
+        .postcard.open .sparkle { opacity: 1; } /* Show sparkles */
+        @keyframes sparkle-fall { /* Animation remains */
+            0% { transform: translateY(-20px) scale(0.5); opacity: 0; } 50% { opacity: 1; }
+            100% { transform: translateY(120px) scale(1.2); opacity: 0; }
+        }
+
+        /* SVG Filter for Stamp Edge */
+        svg { position: absolute; width: 0; height: 0; }
+
+        /* Link to Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
+
+        /* Style for the canvas confetti */
+        #confetti-canvas { /* Style remains */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1000; pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Floating Hearts -->
+    <div class="heart">❤️</div> <div class="heart">💖</div> <div class="heart">💕</div>
+    <div class="heart">💗</div> <div class="heart">💓</div> <div class="heart">💞</div>
+    <div class="heart">💝</div> <div class="heart">❤️</div>
+
+    <!-- SVG Filter Definition -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+      <defs>
+        <filter id="wavy2">
+          <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="1"></feTurbulence>
+          <feDisplacementMap in="SourceGraphic" scale="3"></feDisplacementMap>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Canvas for Confetti -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="postcard-container">
+        <div class="postcard" id="birthdayCard">
+            <!-- Front of the Card -->
+            <div class="card-front">
+                <div class="stamp">Happy<br>B'day!<span></span></div> <!-- Added span for filter -->
+
+                <!-- Address Info -->
+                <div class="address-info">
+                    <p><strong>To:</strong> Astha Madam</p>
+                    <p><strong>From:</strong> Your Bestie <!-- CHANGE THIS --> </p>
+                </div>
+
+                 <div class="front-text">
+                   (Click Me Gently!)
+                </div>
+            </div>
+
+            <!-- Inside of the Card -->
+            <div class="card-inside">
+                <div class="inside-left">
+                    <!-- Photo Placeholder -->
+                    <div class="photo-placeholder">
+                        <img src="./astha.jpg" alt="Your Photo Here" style="display: none;">
+                        <span class="placeholder-text">Place your special photo here!</span>
+                    </div>
+                </div>
+                <div class="inside-right">
+                    <!-- Sparkles -->
+                    <div class="sparkle"></div> <div class="sparkle"></div>
+                    <div class="sparkle"></div> <div class="sparkle"></div>
+                    <div class="sparkle"></div> <div class="sparkle"></div>
+                    <div class="sparkle"></div> <div class="sparkle"></div>
+                    <div class="sparkle"></div> <div class="sparkle"></div>
+                    <!-- Birthday Message -->
+                    <h1 class="birthday-message" id="birthdayMessage">Happy Birthday dearest bff Astha Madam :-)</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Confetti Library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const postcard = document.getElementById('birthdayCard');
+        const birthdayMessage = document.getElementById('birthdayMessage');
+        const messageSpans = []; // Store spans for easier access
+
+        const photoPlaceholder = document.querySelector('.photo-placeholder');
+        const photoImg = photoPlaceholder.querySelector('img');
+        const placeholderText = photoPlaceholder.querySelector('.placeholder-text');
+
+        // --- Prepare Staggered Text & Store Spans ---
+        const originalText = birthdayMessage.innerText;
+        birthdayMessage.textContent = ''; // Clear original text
+        originalText.split('').forEach((char) => {
+            const span = document.createElement('span');
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            // Delay set via CSS class toggle now
+            birthdayMessage.appendChild(span);
+            messageSpans.push(span); // Store the span
+        });
+        const totalChars = messageSpans.length; // Total characters for reverse delay
+
+        // --- Confetti Function (remains the same) ---
+        const myConfetti = confetti.create(document.getElementById('confetti-canvas'), { resize: true, useWorker: true });
+        function triggerConfetti() {
+            myConfetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#f8cdda', '#d6a4a4', '#f7cac9', '#92a8d1', '#ffffff'] });
+        }
+
+        // --- Card Click Listener ---
+        postcard.addEventListener('click', () => {
+            const isOpening = !postcard.classList.contains('open');
+            postcard.classList.toggle('open');
+
+            // Apply delays based on open/close state
+            messageSpans.forEach((span, index) => {
+                 if (isOpening) {
+                     // Staggered delay for opening
+                     span.style.transitionDelay = `${index * 0.03}s`;
+                 } else {
+                     // Reverse staggered delay for closing
+                     span.style.transitionDelay = `${(totalChars - 1 - index) * 0.02}s`; // Faster closing fade
+                 }
+             });
+
+
+            if (isOpening) {
+                setTimeout(triggerConfetti, 400);
+            }
+        });
+
+        // --- Photo Placeholder Logic (remains the same) ---
+        if (photoImg.getAttribute('src') && photoImg.getAttribute('src') !== "") {
+            photoImg.style.display = 'block';
+            if(placeholderText) placeholderText.style.display = 'none';
+             photoImg.onerror = () => { photoImg.style.display = 'none'; if(placeholderText) placeholderText.style.display = 'block'; };
+        } else {
+            photoImg.style.display = 'none';
+            if(placeholderText) placeholderText.style.display = 'block';
+        }
+
+    </script>
+
+</body>
+</html>
